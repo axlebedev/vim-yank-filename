@@ -28,7 +28,12 @@ export def YankGithubURL(isMasterBranch: bool)
     remoteUrl = substitute(remoteUrl, 'ssh\/\/\/', '', '')
     remoteUrl = substitute(remoteUrl, '\:\d\+', '', '')
 
-    var branchName = isMasterBranch ? 'master' : systemlist('git rev-parse --abbrev-ref HEAD')[0]
+    var branchName = ''
+    if isMasterBranch
+        branchName = systemlist("git symbolic-ref refs/remotes/origin/HEAD | awk -F'/' '{ print $NF }'")[0]
+    else
+        branchName = systemlist('git rev-parse --abbrev-ref HEAD')[0]
+    endif
     var filename = expand("%:.")
     var lineNr = line('.')
 
